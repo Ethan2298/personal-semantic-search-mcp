@@ -1,0 +1,8 @@
+beautifulsoup4
+PyMuPDF
+langchain-text-splitters
+tiktoken
+sentence-transformers
+chromadb
+watchdog
+mcp
