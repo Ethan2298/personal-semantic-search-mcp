@@ -10,17 +10,42 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+import time
+
 from mcp.server.fastmcp import FastMCP
 
 # Import from local modules
 from search import search_vault, index_vault
 from vector_store import init_db, get_collection_stats
+from embedding_engine import get_model
 
 # Default vault path
 DEFAULT_VAULT = os.path.expanduser("~/Desktop/Notes")
 
 # Create the FastMCP server
 mcp = FastMCP("semantic-search")
+
+
+def warmup():
+    """
+    Pre-load heavy dependencies to avoid cold-start delays.
+
+    This should be called before mcp.run() to ensure:
+    - Embedding model is loaded (~10s on first load)
+    - ChromaDB connection is established
+    """
+    start = time.time()
+
+    # Load embedding model (this takes ~10s first time)
+    print("Loading embedding model...", flush=True)
+    get_model()
+
+    # Initialize ChromaDB connection
+    print("Initializing ChromaDB...", flush=True)
+    init_db()
+
+    elapsed = time.time() - start
+    print(f"Warmup complete in {elapsed:.1f}s", flush=True)
 
 
 @mcp.tool()
@@ -106,4 +131,5 @@ def get_index_stats() -> str:
 
 
 if __name__ == "__main__":
+    warmup()
     mcp.run(transport="stdio")

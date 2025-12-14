@@ -8,28 +8,28 @@ MCP server responds with empty results because heavy dependencies (sentence-tran
 
 ## Scenarios
 
-### Scenario 1: Server pre-loads embedding model ⬜
+### Scenario 1: Server pre-loads embedding model ✅
 Given the MCP server is starting up
 When initialization begins
 Then the embedding model is loaded before accepting connections
 And startup time is logged
 
-**Status:** Not started
+**Status:** Complete | **Test:** `test_warmup_loads_embedding_model`
 
-### Scenario 2: Tool calls respond immediately after init ⬜
+### Scenario 2: Tool calls respond immediately after init ✅
 Given the MCP server has completed initialization
 When a tool call is made (e.g., get_index_stats)
 Then the response is returned within 1 second
 
-**Status:** Not started
+**Status:** Complete | **Test:** `test_get_index_stats_responds_quickly_after_warmup`
 
-### Scenario 3: Search works on first call ⬜
+### Scenario 3: Search works on first call ✅
 Given the MCP server has completed initialization
 And the vault is indexed
 When search_notes is called with a query
 Then results are returned within 1 second
 
-**Status:** Not started
+**Status:** Complete | **Test:** `test_search_notes_responds_quickly_after_warmup`
 
 ## Technical Approach
 1. Add `warmup()` function that pre-loads:
@@ -39,7 +39,7 @@ Then results are returned within 1 second
 3. Log timing for visibility
 
 ## Acceptance Criteria
-- [ ] Embedding model loaded at startup (not on first use)
-- [ ] ChromaDB connection established at startup
-- [ ] Tool calls respond <1s after server ready
-- [ ] Startup time visible in logs
+- [x] Embedding model loaded at startup (not on first use)
+- [x] ChromaDB connection established at startup
+- [x] Tool calls respond <1s after server ready
+- [x] Startup time visible in logs
